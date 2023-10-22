@@ -1,0 +1,72 @@
+---
+import AboutMe from "../components/AboutMe.astro";
+import Layout from "../layouts/Layout.astro";
+import Card from "../components/Card.astro";
+
+const experience = [
+  {
+    period: "2023 - Current",
+    position: "Senior Software Engineer",
+    company: "Openscreen Inc.",
+    description:
+      "Senior engineer; architected sales app with AWS, NodeJS, DynamoDB; seamlessly integrated Stripe into core product.",
+    technologies: [
+      "AWS",
+      "NodeJS",
+      "DynamoDB",
+      "Stripe",
+      "Serverless",
+      "AWS CDK",
+    ],
+  },
+  {
+    period: "2021 - 2023",
+    position: "Senior Software Engineer",
+    company: "Otto Intelligence Inc.",
+    description:
+      "Initial & solo engineer for a startup; crafted advisor dashboards, gamefied surveys; migrated MVP & led AWS backend infrastructure design with Terraform.",
+    technologies: [
+      "AWS",
+      "NodeJS",
+      "DynamoDB",
+      "GraphQL",
+      "PostgreSQL",
+      "React",
+      "Terraform",
+    ],
+  },
+  {
+    period: "2020 - 2021",
+    position: "Software Engineer",
+    company: "Shipa Cloud Native",
+    description:
+      "Transformed legacy JS code to robust Typescript; pioneered company's Terraform projects; crafted backend user registration system using NestJS & AWS.",
+    technologies: ["Typescript", "NestJS", "Serverless", "PostgreSQL"],
+  },
+  {
+    period: "2018 - 2020",
+    position: "Software Engineer",
+    company: "SkipTheDishes Restaurant Service Inc.",
+    description:
+      "Designed a realtime chat system with GraphQL/Redis; innovated a Micro-Frontend approach using React; sustained NodeJS chat API & built operational dashboards",
+    technologies: ["NodeJS", "React", "GraphQL", "Redis"],
+  },
+  {
+    period: "2018 - 2020",
+    position: "Junior Software Engineer",
+    company: "Icasei Servicos LTDA",
+    description:
+      "Frontend lead for the main dashboard; spearheaded feature development using AngularJS, SASS, and Rails in tandem with Google Material Design.",
+    technologies: ["AngularJS", "SASS", "Google Material Design"],
+  },
+];
+---
+
+<Layout title="Daniel's professional experience">
+  <div class="lg:flex lg:justify-between lg:gap-4">
+    <AboutMe />
+    <div class="w-1/2 gap-y-4 flex flex-col">
+      {experience.map((job) => <Card {...job} />)}
+    </div>
+  </div>
+</Layout>

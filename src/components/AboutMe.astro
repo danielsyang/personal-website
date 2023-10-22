@@ -1,0 +1,30 @@
+---
+import { Picture } from "astro:assets";
+import githubLogo from "../logos/github-mark.svg";
+import linkedinLogo from "../logos/linkedin-svgrepo-com.svg";
+---
+
+<div class="w-1/2">
+  <h3 class="text-4xl mb-2 text-zinc-600">Danile Yang</h3>
+  <h5 class="text-lg mb-2 text-zinc-600">
+    Senior Software Engineer at Openscreen Inc.
+  </h5>
+  <p class="text-sm text-zinc-400 max-w-sm">
+    I build accessible, inclusive products and digital experiences for the web.
+  </p>
+
+  <div class="flex mt-10 gap-4">
+    <a href="https://github.com/danielsyang">
+      <Picture src={githubLogo} format="svg" alt="Github's Logo" width={24} />
+    </a>
+
+    <a href="https://www.linkedin.com/in/shuyangchang/">
+      <Picture
+        src={linkedinLogo}
+        format="svg"
+        alt="Linkedin's Logo"
+        width={24}
+      />
+    </a>
+  </div>
+</div>

@@ -1,0 +1,21 @@
+---
+import TechPill from "./TechPill.astro";
+const { period, position, company, description, technologies } = Astro.props;
+---
+
+<section class="gap-4 flex shadow p-4">
+  <div class="mt-1 min-w-[97px]">
+    <p class="text-sm text-zinc-400 whitespace-nowrap">{period}</p>
+  </div>
+
+  <div class="">
+    <h3 class="text-lg text-zinc-500 font-bold">{position}</h3>
+    <p class="text-base text-zinc-400">{company}</p>
+    <p class="mt-2 text-sm text-zinc-400">
+      {description}
+    </p>
+    <div class="mt-2 flex gap-2 gap-y-2 flex-wrap">
+      {technologies.map((name: string) => <TechPill name={name} />)}
+    </div>
+  </div>
+</section>
