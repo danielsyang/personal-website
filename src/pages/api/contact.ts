@@ -38,7 +38,9 @@ export const POST: APIRoute = async ({ request }) => {
         text: info,
       });
     } catch (e) {
-      console.error(`couldn't send email from: ${email}`);
+      console.error(
+        `couldn't send email from: ${email}, due to: ${JSON.stringify(e)}`
+      );
       console.error(`INFO: ${info}`);
     }
 
