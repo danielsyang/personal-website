@@ -6,7 +6,7 @@ import ContactMeForm from "../components/ContactMeForm";
 
 <Layout title="Daniel's projects">
   <div class="lg:flex lg:justify-between lg:gap-4">
-    <AboutMe />
+    <AboutMe hideDescription={true} />
     <div class="lg:w-1/2 gap-y-4 flex flex-col px-4 pt-16 lg:pt-0">
       <ContactMeForm client:only="solid" />
     </div>

@@ -30,7 +30,7 @@ export default function ContactMeForm() {
             id="firstName"
             name="firstName"
             required
-            class="border rounded-md border-zinc-300"
+            class="border rounded-md border-zinc-300 px-2 text-xs py-1"
           />
         </div>
         <div class="flex flex-col md:w-[calc(50%-8px)] mt-4 md:mt-0">
@@ -42,7 +42,7 @@ export default function ContactMeForm() {
             id="lastName"
             name="lastName"
             required
-            class="border rounded-md border-zinc-300"
+            class="border rounded-md border-zinc-300 px-2 text-xs py-1"
           />
         </div>
       </div>
@@ -56,7 +56,7 @@ export default function ContactMeForm() {
           id="email"
           name="email"
           required
-          class="border rounded-md border-zinc-300"
+          class="border rounded-md border-zinc-300 px-2 text-xs py-1"
         />
       </div>
 
@@ -68,7 +68,7 @@ export default function ContactMeForm() {
           id="message"
           name="message"
           required
-          class="border rounded-md border-zinc-300"
+          class="border rounded-md border-zinc-300 px-2 text-xs py-1"
           rows={8}
         />
       </div>

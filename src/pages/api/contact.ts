@@ -1,13 +1,54 @@
 import type { APIRoute } from "astro";
+import { contact } from "../../validations/contact";
+import sgMail from "@sendgrid/mail";
+
+const sendgridKey = import.meta.env.SENDGRID_API_KEY;
+const sendgridFrom = import.meta.env.SENDGRID_FROM;
+const sendgridTo = import.meta.env.SENDGRID_TO;
+
+sgMail.setApiKey(sendgridKey);
+
+const msg = {
+  to: sendgridTo,
+  from: sendgridFrom,
+  subject: "Request from personal website",
+};
 
 export const POST: APIRoute = async ({ request }) => {
   const data = await request.formData();
+
   const firstName = data.get("firstName");
   const lastName = data.get("lastName");
   const email = data.get("email");
   const message = data.get("message");
-  // Validate the data - you'll probably want to do more than this
-  if (!firstName || !email || !message) {
+
+  const result = await contact.safeParseAsync({
+    firstName,
+    lastName,
+    email,
+    message,
+  });
+
+  if (result.success) {
+    const info = JSON.stringify(result.data);
+
+    try {
+      await sgMail.send({
+        ...msg,
+        text: info,
+      });
+    } catch (e) {
+      console.error(`couldn't send email from: ${email}`);
+      console.error(`INFO: ${info}`);
+    }
+
+    return new Response(
+      JSON.stringify({
+        message: "Finished.",
+      }),
+      { status: 200 }
+    );
+  } else {
     return new Response(
       JSON.stringify({
         message: "Missing required fields",
@@ -15,12 +56,4 @@ export const POST: APIRoute = async ({ request }) => {
       { status: 400 }
     );
   }
-  console.log("YUESS!");
-  // Do something with the data, then return a success response
-  return new Response(
-    JSON.stringify({
-      message: "Success!",
-    }),
-    { status: 200 }
-  );
 };
