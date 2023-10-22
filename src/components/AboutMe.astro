@@ -2,10 +2,18 @@
 import { Picture } from "astro:assets";
 import githubLogo from "../logos/github-mark.svg";
 import linkedinLogo from "../logos/linkedin-svgrepo-com.svg";
+import Selfie from "../images/selfie.jpeg";
 ---
 
 <div class="w-1/2">
-  <h3 class="text-4xl mb-2 text-zinc-600">Danile Yang</h3>
+  <Picture
+    src={Selfie}
+    alt="Daniel's Selfie"
+    class="rounded-full"
+    width={350}
+    height={350}
+  />
+  <h3 class="text-4xl mb-2 text-zinc-600 mt-8">Danile Yang</h3>
   <h5 class="text-lg mb-2 text-zinc-600">
     Senior Software Engineer at Openscreen Inc.
   </h5>
