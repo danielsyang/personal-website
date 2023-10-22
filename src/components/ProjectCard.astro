@@ -1,11 +1,12 @@
 ---
+import { Picture } from "astro:assets";
 import TechPill from "./TechPill.astro";
-const { period, title, description, technologies } = Astro.props;
+const { title, description, technologies, thumbnail } = Astro.props;
 ---
 
 <section class="gap-4 flex shadow p-4">
   <div class="mt-1 min-w-[97px]">
-    <p class="text-sm text-zinc-400 whitespace-nowrap">{period}</p>
+    <Picture src={thumbnail} alt={`${title}'s thumbnail'`} width={130} />
   </div>
 
   <div class="">

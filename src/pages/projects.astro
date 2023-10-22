@@ -2,30 +2,33 @@
 import AboutMe from "../components/AboutMe.astro";
 import Layout from "../layouts/Layout.astro";
 import ProjectCard from "../components/ProjectCard.astro";
+import OttoLanding from "../images/ottointelligence.jpg";
+import MeetOttoLanding from "../images/meetotto.jpg";
+import TuiDo from "../images/tuido.png";
 
 const projects = [
   {
-    period: "2023 - Current",
+    thumbnail: OttoLanding,
     title: "Dang Language",
     description:
       "Wrote my own interpreter in Rust. Inspired by Javascript. I want it to become more Typescript-y, but there's a lot of work to do.",
     technologies: ["Rust"],
   },
   {
-    period: "2023 - Current",
+    thumbnail: TuiDo,
     title: "Tui-Do",
     description:
       "To do app written in Rust, operated in the terminal and uses SQLite as main database.",
     technologies: ["Rust"],
   },
   {
-    period: "2021 - 2023",
+    thumbnail: OttoLanding,
     title: "Otto Intelligence App.",
     description: "Portfolio manager developer during my time at Otto.",
     technologies: ["React", "Tailwind"],
   },
   {
-    period: "2021 - 2023",
+    thumbnail: MeetOttoLanding,
     title: "Mett Otto App.",
     description:
       "Custom CRM for Otto Intelligence. I was the main developer for this project.",
