@@ -3,6 +3,12 @@ import { Picture } from "astro:assets";
 import githubLogo from "../logos/github-mark.svg";
 import linkedinLogo from "../logos/linkedin-svgrepo-com.svg";
 import Selfie from "../images/selfie.jpeg";
+
+interface Props {
+  hideDescription?: boolean;
+}
+
+const { hideDescription } = Astro.props;
 ---
 
 <div class="lg:w-1/2 w-full px-4">
@@ -13,7 +19,31 @@ import Selfie from "../images/selfie.jpeg";
       class="rounded-full lg:w-[350px] lg:h-[350px] w-[100px]"
     />
     <div class="ml-4 lg:hidden">
-      <h3 class="text-2xl mb-2 text-zinc-600">Danile Yang</h3>
+      <div class="flex mb-2 items-center">
+        <h3 class="text-2xl text-zinc-600">Danile Yang</h3>
+        <div class="flex gap-4 ml-4 sm:ml-auto lg:hidden">
+          <a href="https://github.com/danielsyang" class="w-5 sm:w-6">
+            <Picture
+              src={githubLogo}
+              format="svg"
+              alt="Github's Logo"
+              width={24}
+            />
+          </a>
+
+          <a
+            href="https://www.linkedin.com/in/shuyangchang/"
+            class="w-5 sm:w-6"
+          >
+            <Picture
+              src={linkedinLogo}
+              format="svg"
+              alt="Linkedin's Logo"
+              width={24}
+            />
+          </a>
+        </div>
+      </div>
       <h5 class="text-xs text-zinc-600">
         Senior Software Engineer at Openscreen Inc.
       </h5>
@@ -23,11 +53,16 @@ import Selfie from "../images/selfie.jpeg";
   <h5 class="text-lg mb-2 text-zinc-600 hidden lg:block">
     Senior Software Engineer at Openscreen Inc.
   </h5>
-  <p class="text-sm text-zinc-400 lg:max-w-sm mt-4">
-    I build accessible, inclusive products and digital experiences for the web.
-  </p>
+  {
+    !hideDescription && (
+      <p class="text-xs md:text-sm text-zinc-400 lg:max-w-sm mt-4">
+        I build accessible, inclusive products and digital experiences for the
+        web.
+      </p>
+    )
+  }
 
-  <div class="flex mt-10 gap-4 mb-4">
+  <div class="lg:flex mt-10 gap-4 mb-4 hidden">
     <a href="https://github.com/danielsyang">
       <Picture src={githubLogo} format="svg" alt="Github's Logo" width={24} />
     </a>

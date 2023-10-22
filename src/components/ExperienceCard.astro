@@ -1,5 +1,14 @@
 ---
 import TechPill from "./TechPill.astro";
+
+interface Props {
+  period: string;
+  position: string;
+  company: string;
+  description: string;
+  technologies: string[];
+}
+
 const { period, position, company, description, technologies } = Astro.props;
 ---
 

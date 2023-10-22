@@ -1,6 +1,15 @@
 ---
 import { Picture } from "astro:assets";
 import TechPill from "./TechPill.astro";
+import type { ImageMetadata } from "astro";
+
+interface Props {
+  title: string;
+  description: string;
+  technologies: string[];
+  thumbnail: ImageMetadata;
+}
+
 const { title, description, technologies, thumbnail } = Astro.props;
 ---
 
