@@ -1,13 +1,14 @@
 ---
 import AboutMe from "../components/AboutMe.astro";
 import Layout from "../layouts/Layout.astro";
+import ContactMeForm from "../components/ContactMeForm";
 ---
 
 <Layout title="Daniel's projects">
   <div class="lg:flex lg:justify-between lg:gap-4">
     <AboutMe />
     <div class="lg:w-1/2 gap-y-4 flex flex-col px-4 pt-16 lg:pt-0">
-      COntact me
+      <ContactMeForm client:only="solid" />
     </div>
   </div>
 </Layout>
