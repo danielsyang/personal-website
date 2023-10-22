@@ -1,7 +1,7 @@
 ---
 import AboutMe from "../components/AboutMe.astro";
 import Layout from "../layouts/Layout.astro";
-import Card from "../components/Card.astro";
+import ExperienceCard from "../components/ExperienceCard.astro";
 
 const experience = [
   {
@@ -52,8 +52,8 @@ const experience = [
     technologies: ["NodeJS", "React", "Redux", "GraphQL", "Redis", "Java"],
   },
   {
-    period: "2018 - 2020",
-    position: "Junior Software Engineer",
+    period: "2017 - 2018",
+    position: "Front end Software Engineer",
     company: "Icasei Servicos LTDA",
     description:
       "Frontend lead for the main dashboard; spearheaded feature development using AngularJS, SASS, and Rails in tandem with Google Material Design.",
@@ -65,8 +65,8 @@ const experience = [
 <Layout title="Daniel's professional experience">
   <div class="lg:flex lg:justify-between lg:gap-4">
     <AboutMe />
-    <div class="w-1/2 gap-y-4 flex flex-col">
-      {experience.map((job) => <Card {...job} />)}
+    <div class="lg:w-1/2 gap-y-4 flex flex-col px-4 pt-16">
+      {experience.map((job) => <ExperienceCard {...job} />)}
     </div>
   </div>
 </Layout>

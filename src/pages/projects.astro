@@ -11,7 +11,7 @@ const projects = [
     thumbnail: OttoLanding,
     title: "Dang Language",
     description:
-      "Wrote my own interpreter in Rust. Inspired by Javascript. I want it to become more Typescript-y, but there's a lot of work to do.",
+      "Wrote my own interpreter in Rust. It has a very similar sintax to Javascript, but I'm making some changes for it to become more Typescript-y.",
     technologies: ["Rust"],
   },
   {
@@ -24,14 +24,14 @@ const projects = [
   {
     thumbnail: OttoLanding,
     title: "Otto Intelligence App.",
-    description: "Portfolio manager developer during my time at Otto.",
+    description:
+      "Portfolio manager developer during my time at Otto. I was the main developer for this project.",
     technologies: ["React", "Tailwind"],
   },
   {
     thumbnail: MeetOttoLanding,
     title: "Mett Otto App.",
-    description:
-      "Custom CRM for Otto Intelligence. I was the main developer for this project.",
+    description: "Custom CRM for Otto Intelligence.",
     technologies: ["React", "Tailwind", "trpc"],
   },
 ];
@@ -40,7 +40,7 @@ const projects = [
 <Layout title="Daniel's projects">
   <div class="lg:flex lg:justify-between lg:gap-4">
     <AboutMe />
-    <div class="w-1/2 gap-y-4 flex flex-col">
+    <div class="lg:w-1/2 gap-y-4 flex flex-col px-4 pt-16">
       {projects.map((job) => <ProjectCard {...job} />)}
     </div>
   </div>

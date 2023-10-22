@@ -4,14 +4,14 @@ import TechPill from "./TechPill.astro";
 const { title, description, technologies, thumbnail } = Astro.props;
 ---
 
-<section class="gap-4 flex shadow p-4">
-  <div class="mt-1 min-w-[97px]">
-    <Picture src={thumbnail} alt={`${title}'s thumbnail'`} width={130} />
+<section class="md:gap-4 lg:gap-4 flex shadow p-4 flex-col md:flex-row rounded">
+  <div class="mt-1 min-w-[95px] md:min-w-[120px] md:w-[120px]">
+    <Picture src={thumbnail} alt={`${title}'s thumbnail'`} class="rounded-lg" />
   </div>
 
-  <div class="">
-    <h3 class="text-lg text-zinc-500 font-bold">{title}</h3>
-    <p class="mt-2 text-sm text-zinc-400">
+  <div class="mt-2 md:mt-0">
+    <h3 class="text-base lg:text-lg text-zinc-500 font-bold">{title}</h3>
+    <p class="mt-2 text-xs lg:text-sm text-zinc-400">
       {description}
     </p>
     <div class="mt-2 flex gap-2 gap-y-2 flex-wrap">
