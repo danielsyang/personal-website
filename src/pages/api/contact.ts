@@ -5,6 +5,9 @@ import sgMail from "@sendgrid/mail";
 const sendgridKey = import.meta.env.SENDGRID_API_KEY;
 const sendgridFrom = import.meta.env.SENDGRID_FROM;
 const sendgridTo = import.meta.env.SENDGRID_TO;
+const recaptchaKey = import.meta.env.RECAPTCHA_SERVER_SIDE;
+
+const recaptchaURL = "https://www.google.com/recaptcha/api/siteverify";
 
 sgMail.setApiKey(sendgridKey);
 
@@ -21,6 +24,28 @@ export const POST: APIRoute = async ({ request }) => {
   const lastName = data.get("lastName");
   const email = data.get("email");
   const message = data.get("message");
+  const recaptcha = data.get("g-recaptcha-response");
+
+  const response = await fetch(
+    `${recaptchaURL}?secret=${recaptchaKey}&response=${recaptcha}`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+    }
+  );
+
+  const recaptchaResult = await response.json();
+
+  if (!recaptchaResult.success || recaptchaResult.score < 0.5) {
+    return new Response(
+      JSON.stringify({
+        message: "Recaptcha failed, try again later.",
+      }),
+      { status: 400 }
+    );
+  }
 
   const result = await contact.safeParseAsync({
     firstName,
