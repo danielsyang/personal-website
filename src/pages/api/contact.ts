@@ -38,7 +38,6 @@ export const POST: APIRoute = async ({ request }) => {
   );
 
   const recaptchaResult = await response.json();
-  console.log(recaptchaResult);
 
   if (
     !recaptchaResult.success ||
