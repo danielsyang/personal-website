@@ -14,6 +14,7 @@ export default function ContactMeForm() {
   const [formData, setFormData] = createSignal<FormData>();
   const [grecaptchaObj, setGrecaptchaObj] = createSignal<any>();
   const [response] = createResource(formData, postFormData);
+  let resetButton: HTMLButtonElement | undefined;
 
   createEffect(() => {
     createScriptLoader({
@@ -28,6 +29,12 @@ export default function ContactMeForm() {
         }
       },
     });
+  });
+
+  createEffect(() => {
+    if (response() && response().message && resetButton) {
+      resetButton.click();
+    }
   });
 
   function submit(e: SubmitEvent) {
@@ -72,7 +79,6 @@ export default function ContactMeForm() {
           />
         </div>
       </div>
-
       <div class="flex flex-col mt-4">
         <label class="font-bold text-xs items-center mb-1">
           Email <span class="text-red-400">*</span>
@@ -85,7 +91,6 @@ export default function ContactMeForm() {
           class="border rounded-md border-zinc-300 px-2 text-xs py-1"
         />
       </div>
-
       <div class="mt-4 flex flex-col">
         <label class="font-bold text-xs items-center mb-1">
           Message <span class="text-red-400">*</span>
@@ -98,9 +103,30 @@ export default function ContactMeForm() {
           rows={8}
         />
       </div>
-      <button class="mt-4 ml-auto border rounded-lg px-4 py-2" type="submit">
-        Send
+      {response.error && (
+        <p class="mt-2 text-sm text-red-500">
+          Something went wrong, please try again later!
+        </p>
+      )}
+      {response() && response().message && (
+        <p class="mt-2 text-sm text-green-500">
+          Your message has been sent successfully!
+        </p>
+      )}
+
+      <button
+        class="btn mt-2 btn-sm mx-auto md:ml-auto md:mr-0 btn-outline text-zinc-500 min-w-[62px]"
+        type="submit"
+        disabled={response.loading}
+      >
+        {!response.loading ? (
+          "Send"
+        ) : (
+          <span class="loading loading-dots loading-xs"></span>
+        )}
       </button>
+
+      <button class="hidden" type="reset" ref={resetButton} />
     </form>
   );
 }

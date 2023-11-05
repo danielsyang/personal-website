@@ -18,6 +18,13 @@ const msg = {
 };
 
 export const POST: APIRoute = async ({ request }) => {
+  return new Response(
+    JSON.stringify({
+      message: "Finished.",
+    }),
+    { status: 200 }
+  );
+  
   const data = await request.formData();
 
   const firstName = data.get("firstName");
@@ -37,6 +44,7 @@ export const POST: APIRoute = async ({ request }) => {
   );
 
   const recaptchaResult = await response.json();
+  console.log(recaptchaResult);
 
   if (!recaptchaResult.success || recaptchaResult.score < 0.5) {
     return new Response(
