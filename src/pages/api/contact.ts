@@ -18,13 +18,6 @@ const msg = {
 };
 
 export const POST: APIRoute = async ({ request }) => {
-  return new Response(
-    JSON.stringify({
-      message: "Finished.",
-    }),
-    { status: 200 }
-  );
-  
   const data = await request.formData();
 
   const firstName = data.get("firstName");
