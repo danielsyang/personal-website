@@ -6,6 +6,7 @@ const sendgridKey = import.meta.env.SENDGRID_API_KEY;
 const sendgridFrom = import.meta.env.SENDGRID_FROM;
 const sendgridTo = import.meta.env.SENDGRID_TO;
 const recaptchaKey = import.meta.env.RECAPTCHA_SERVER_SIDE;
+const action = import.meta.env.PUBLIC_CAPTCHA_ACTION;
 
 const recaptchaURL = "https://www.google.com/recaptcha/api/siteverify";
 
@@ -39,7 +40,11 @@ export const POST: APIRoute = async ({ request }) => {
   const recaptchaResult = await response.json();
   console.log(recaptchaResult);
 
-  if (!recaptchaResult.success || recaptchaResult.score < 0.5) {
+  if (
+    !recaptchaResult.success ||
+    recaptchaResult.score < 0.5 ||
+    recaptchaResult.action !== action
+  ) {
     return new Response(
       JSON.stringify({
         message: "Recaptcha failed, try again later.",

@@ -1,6 +1,9 @@
 import { createSignal, createResource, createEffect } from "solid-js";
 import { createScriptLoader } from "@solid-primitives/script-loader";
 
+const CLIENT_SIDE_KEY = import.meta.env.PUBLIC_RECAPTCHA_CLIENT_SIDE;
+const ACTION = import.meta.env.PUBLIC_CAPTCHA_ACTION;
+
 async function postFormData(formData: FormData) {
   const response = await fetch("/api/contact", {
     method: "POST",
@@ -18,9 +21,7 @@ export default function ContactMeForm() {
 
   createEffect(() => {
     createScriptLoader({
-      src: `https://www.google.com/recaptcha/api.js?render=${
-        import.meta.env.PUBLIC_RECAPTCHA_CLIENT_SIDE
-      }`,
+      src: `https://www.google.com/recaptcha/api.js?render=${CLIENT_SIDE_KEY}`,
       async onLoad() {
         // @ts-ignore
         if (grecaptcha) {
@@ -42,7 +43,7 @@ export default function ContactMeForm() {
     const g = grecaptchaObj();
     g.ready(() => {
       g.execute(import.meta.env.PUBLIC_RECAPTCHA_CLIENT_SIDE, {
-        action: "submit",
+        action: ACTION,
       }).then((token: string) => {
         const form = new FormData(e.target as HTMLFormElement);
         form.append("g-recaptcha-response", token);
