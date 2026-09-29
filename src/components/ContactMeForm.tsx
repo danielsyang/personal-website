@@ -36,7 +36,7 @@ function loadRecaptcha() {
     script.onerror = () => reject(new Error("reCAPTCHA failed to load"));
     document.head.appendChild(script);
   }).catch((e) => {
-    // Allow a retry on the next attempt, e.g. after disabling a blocker.
+    // Allow a retry on the next focus, e.g. after disabling a blocker.
     recaptchaPromise = undefined;
     throw e;
   });
@@ -45,6 +45,7 @@ function loadRecaptcha() {
 
 export default function ContactMeForm() {
   const [formData, setFormData] = createSignal<FormData>();
+  const [grecaptchaObj, setGrecaptchaObj] = createSignal<any>();
   const [captchaFailed, setCaptchaFailed] = createSignal(false);
   const [scriptBlocked, setScriptBlocked] = createSignal(false);
   const [preparing, setPreparing] = createSignal(false);
@@ -59,38 +60,31 @@ export default function ContactMeForm() {
 
   function preload() {
     loadRecaptcha().then(
-      () => setScriptBlocked(false),
+      (g) => {
+        setGrecaptchaObj(() => g);
+        setScriptBlocked(false);
+      },
       () => setScriptBlocked(true)
     );
   }
 
   async function submit(e: SubmitEvent) {
     e.preventDefault();
-    if (preparing() || response.loading) return;
+    const g = grecaptchaObj();
+    if (!g || preparing() || response.loading) return;
 
     setCaptchaFailed(false);
     setPreparing(true);
     const form = new FormData(e.target as HTMLFormElement);
 
     try {
-      let g;
-      try {
-        g = await loadRecaptcha();
-        setScriptBlocked(false);
-      } catch {
-        setScriptBlocked(true);
-        return;
-      }
-
-      try {
-        const token: string = await g.execute(CLIENT_SIDE_KEY, {
-          action: ACTION,
-        });
-        form.append("g-recaptcha-response", token);
-        setFormData(form);
-      } catch {
-        setCaptchaFailed(true);
-      }
+      const token: string = await g.execute(CLIENT_SIDE_KEY, {
+        action: ACTION,
+      });
+      form.append("g-recaptcha-response", token);
+      setFormData(form);
+    } catch {
+      setCaptchaFailed(true);
     } finally {
       setPreparing(false);
     }
@@ -168,7 +162,7 @@ export default function ContactMeForm() {
       <button
         class="inline-flex items-center justify-center h-8 px-3 mt-2 mx-auto md:ml-auto md:mr-0 min-w-[62px] rounded-lg border border-current text-sm font-semibold uppercase text-zinc-500 transition-colors hover:bg-zinc-700 hover:border-zinc-700 hover:text-white disabled:pointer-events-none disabled:opacity-60"
         type="submit"
-        disabled={preparing() || response.loading}
+        disabled={!grecaptchaObj() || preparing() || response.loading}
       >
         {!(preparing() || response.loading) ? (
           "Send"
