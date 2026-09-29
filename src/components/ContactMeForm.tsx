@@ -1,4 +1,4 @@
-import { createSignal, createResource, createEffect } from "solid-js";
+import { createSignal, createResource, createEffect, onMount } from "solid-js";
 
 const CLIENT_SIDE_KEY = import.meta.env.PUBLIC_RECAPTCHA_CLIENT_SIDE;
 const ACTION = import.meta.env.PUBLIC_CAPTCHA_ACTION;
@@ -15,8 +15,8 @@ async function postFormData(formData: FormData) {
   return data;
 }
 
-// Loaded on first interaction with the form, not on page load: the reCAPTCHA
-// script is ~350 KB gzipped, far larger than the rest of the page.
+// Loaded in the background once the page has finished loading, so the
+// ~350 KB (gzipped) reCAPTCHA script never delays the page itself.
 let recaptchaPromise: Promise<any> | undefined;
 
 function loadRecaptcha() {
@@ -55,6 +55,21 @@ export default function ContactMeForm() {
   createEffect(() => {
     if (response.state === "ready" && resetButton) {
       resetButton.click();
+    }
+  });
+
+  onMount(() => {
+    const schedule = () => {
+      if ("requestIdleCallback" in window) {
+        requestIdleCallback(preload, { timeout: 2000 });
+      } else {
+        setTimeout(preload, 200);
+      }
+    };
+    if (document.readyState === "complete") {
+      schedule();
+    } else {
+      window.addEventListener("load", schedule, { once: true });
     }
   });
 
