@@ -9,41 +9,30 @@ interface Props {
 }
 
 const { hideDescription } = Astro.props;
+
+const socials = [
+  { href: "https://github.com/danielsyang", logo: githubLogo, label: "GitHub" },
+  {
+    href: "https://www.linkedin.com/in/shuyangchang/",
+    logo: linkedinLogo,
+    label: "LinkedIn",
+  },
+];
 ---
 
 <div class="lg:w-1/2 w-full px-4">
   <div class="flex">
     <Picture
       src={Selfie}
-      alt="Daniel's Selfie"
+      formats={["avif", "webp"]}
+      fallbackFormat="jpg"
+      widths={[200, 350, 700]}
+      sizes="(min-width: 1024px) 350px, 100px"
+      alt="Photo of Daniel Yang"
       class="rounded-full lg:w-[350px] lg:h-[350px] w-[100px]"
     />
     <div class="ml-4 lg:hidden">
-      <div class="flex mb-2 items-center">
-        <h3 class="text-2xl text-zinc-600">Daniel Yang</h3>
-        <div class="flex gap-4 ml-4 sm:ml-auto lg:hidden">
-          <a href="https://github.com/danielsyang" class="w-5 sm:w-6">
-            <Picture
-              src={githubLogo}
-              format="svg"
-              alt="Github's Logo"
-              width={24}
-            />
-          </a>
-
-          <a
-            href="https://www.linkedin.com/in/shuyangchang/"
-            class="w-5 sm:w-6"
-          >
-            <Picture
-              src={linkedinLogo}
-              format="svg"
-              alt="Linkedin's Logo"
-              width={24}
-            />
-          </a>
-        </div>
-      </div>
+      <h3 class="text-2xl mb-2 text-zinc-600">Daniel Yang</h3>
       <h5 class="text-xs text-zinc-600">
         Senior Software Engineer at Openscreen Inc.
       </h5>
@@ -62,18 +51,13 @@ const { hideDescription } = Astro.props;
     )
   }
 
-  <div class="lg:flex mt-10 gap-4 mb-4 hidden">
-    <a href="https://github.com/danielsyang">
-      <Picture src={githubLogo} format="svg" alt="Github's Logo" width={24} />
-    </a>
-
-    <a href="https://www.linkedin.com/in/shuyangchang/">
-      <Picture
-        src={linkedinLogo}
-        format="svg"
-        alt="Linkedin's Logo"
-        width={24}
-      />
-    </a>
+  <div class="flex mt-6 lg:mt-10 gap-4 mb-4">
+    {
+      socials.map(({ href, logo, label }) => (
+        <a href={href}>
+          <img src={logo.src} alt={label} width="24" height="24" />
+        </a>
+      ))
+    }
   </div>
 </div>

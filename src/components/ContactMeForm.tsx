@@ -1,5 +1,4 @@
 import { createSignal, createResource, createEffect } from "solid-js";
-import { createScriptLoader } from "@solid-primitives/script-loader";
 
 const CLIENT_SIDE_KEY = import.meta.env.PUBLIC_RECAPTCHA_CLIENT_SIDE;
 const ACTION = import.meta.env.PUBLIC_CAPTCHA_ACTION;
@@ -9,51 +8,90 @@ async function postFormData(formData: FormData) {
     method: "POST",
     body: formData,
   });
-  const data = await response.json();
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw new Error(data.message ?? `Request failed with ${response.status}`);
+  }
   return data;
+}
+
+// Loaded on first interaction with the form, not on page load: the reCAPTCHA
+// script is ~350 KB gzipped, far larger than the rest of the page.
+let recaptchaPromise: Promise<any> | undefined;
+
+function loadRecaptcha() {
+  recaptchaPromise ??= new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = `https://www.google.com/recaptcha/api.js?render=${CLIENT_SIDE_KEY}`;
+    script.async = true;
+    script.onload = () => {
+      // @ts-ignore
+      const g = window.grecaptcha;
+      if (g) {
+        g.ready(() => resolve(g));
+      } else {
+        reject(new Error("grecaptcha is not available"));
+      }
+    };
+    script.onerror = () => reject(new Error("reCAPTCHA failed to load"));
+    document.head.appendChild(script);
+  }).catch((e) => {
+    // Allow a retry on the next focus, e.g. after disabling a blocker.
+    recaptchaPromise = undefined;
+    throw e;
+  });
+  return recaptchaPromise;
 }
 
 export default function ContactMeForm() {
   const [formData, setFormData] = createSignal<FormData>();
   const [grecaptchaObj, setGrecaptchaObj] = createSignal<any>();
+  const [captchaFailed, setCaptchaFailed] = createSignal(false);
+  const [scriptBlocked, setScriptBlocked] = createSignal(false);
+  const [preparing, setPreparing] = createSignal(false);
   const [response] = createResource(formData, postFormData);
   let resetButton: HTMLButtonElement | undefined;
 
   createEffect(() => {
-    createScriptLoader({
-      src: `https://www.google.com/recaptcha/api.js?render=${CLIENT_SIDE_KEY}`,
-      async onLoad() {
-        // @ts-ignore
-        if (grecaptcha) {
-          // @ts-ignore
-          setGrecaptchaObj(grecaptcha);
-        }
-      },
-    });
-  });
-
-  createEffect(() => {
-    if (response() && response().message && resetButton) {
+    if (response.state === "ready" && resetButton) {
       resetButton.click();
     }
   });
 
-  function submit(e: SubmitEvent) {
+  function preload() {
+    loadRecaptcha().then(
+      (g) => {
+        setGrecaptchaObj(() => g);
+        setScriptBlocked(false);
+      },
+      () => setScriptBlocked(true)
+    );
+  }
+
+  async function submit(e: SubmitEvent) {
     e.preventDefault();
     const g = grecaptchaObj();
-    g.ready(() => {
-      g.execute(import.meta.env.PUBLIC_RECAPTCHA_CLIENT_SIDE, {
+    if (!g || preparing() || response.loading) return;
+
+    setCaptchaFailed(false);
+    setPreparing(true);
+    const form = new FormData(e.target as HTMLFormElement);
+
+    try {
+      const token: string = await g.execute(CLIENT_SIDE_KEY, {
         action: ACTION,
-      }).then((token: string) => {
-        const form = new FormData(e.target as HTMLFormElement);
-        form.append("g-recaptcha-response", token);
-        setFormData(form);
       });
-    });
+      form.append("g-recaptcha-response", token);
+      setFormData(form);
+    } catch {
+      setCaptchaFailed(true);
+    } finally {
+      setPreparing(false);
+    }
   }
 
   return (
-    <form onSubmit={submit} class="flex flex-col">
+    <form onSubmit={submit} onFocusIn={preload} class="flex flex-col">
       <div class="md:flex gap-4">
         <div class="flex flex-col md:w-[calc(50%-8px)]">
           <label class="font-bold text-xs items-center mb-1">
@@ -104,26 +142,36 @@ export default function ContactMeForm() {
           rows={8}
         />
       </div>
-      {response.error && (
+      {scriptBlocked() && (
+        <p class="mt-2 text-sm text-red-500">
+          The spam check couldn't load. If you use an ad or tracker blocker,
+          allow google.com/recaptcha and reload the page.
+        </p>
+      )}
+      {(response.error || captchaFailed()) && (
         <p class="mt-2 text-sm text-red-500">
           Something went wrong, please try again later!
         </p>
       )}
-      {response() && response().message && (
+      {response.state === "ready" && (
         <p class="mt-2 text-sm text-green-500">
           Your message has been sent successfully!
         </p>
       )}
 
       <button
-        class="btn mt-2 btn-sm mx-auto md:ml-auto md:mr-0 btn-outline text-zinc-500 min-w-[62px]"
+        class="inline-flex items-center justify-center h-8 px-3 mt-2 mx-auto md:ml-auto md:mr-0 min-w-[62px] rounded-lg border border-current text-sm font-semibold uppercase text-zinc-500 transition-colors hover:bg-zinc-700 hover:border-zinc-700 hover:text-white disabled:pointer-events-none disabled:opacity-60"
         type="submit"
-        disabled={response.loading}
+        disabled={!grecaptchaObj() || preparing() || response.loading}
       >
-        {!response.loading ? (
+        {!(preparing() || response.loading) ? (
           "Send"
         ) : (
-          <span class="loading loading-dots loading-xs"></span>
+          <span
+            class="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"
+            role="status"
+            aria-label="Sending"
+          />
         )}
       </button>
 

@@ -1,17 +1,33 @@
 ---
+import "../styles/global.css";
+
 interface Props {
   title: string;
+  description?: string;
 }
 
-const { title } = Astro.props;
+const {
+  title,
+  description = "Daniel Yang, Senior Software Engineer at Openscreen. Full-stack TypeScript, AWS and Rust; available for freelance work.",
+} = Astro.props;
+
+const links = [
+  { href: "/", label: "Home" },
+  { href: "/service", label: "Services" },
+  { href: "/experience", label: "Experience" },
+  { href: "/projects", label: "Projects" },
+  { href: "/contact", label: "Contact Me" },
+];
+
+const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
 ---
 
 <!doctype html>
 <html lang="en" class="bg-[#fafafa] h-full">
   <head>
     <meta charset="UTF-8" />
-    <meta name="description" content="Astro description" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content={description} />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
@@ -20,16 +36,22 @@ const { title } = Astro.props;
     <div
       class="flex py-4 lg:py-6 text-gray-500 shadow sticky top-0 bg-[#fafafa] px-4"
     >
-      <div class="w-full max-w-5xl m-auto">
-        <a class="text-xs md:text-sm mr-4 md:mr-8" href="/service">Services</a>
-        <a class="text-xs md:text-sm mr-4 md:mr-8" href="/experience"
-          >Experience</a
-        >
-        <a class="text-xs md:text-sm mr-4 md:mr-8" href="/projects">Projects</a>
-        <a class="text-xs md:text-sm mr-4 md:mr-8" href="/">About</a>
-        <a class="text-xs md:text-sm mr-4 md:mr-8" href="/contact">Contact Me</a
-        >
-      </div>
+      <nav class="w-full max-w-5xl m-auto">
+        {
+          links.map(({ href, label }) => (
+            <a
+              class:list={[
+                "text-xs md:text-sm mr-4 md:mr-8",
+                { "text-zinc-800 font-bold": currentPath === href },
+              ]}
+              href={href}
+              aria-current={currentPath === href ? "page" : undefined}
+            >
+              {label}
+            </a>
+          ))
+        }
+      </nav>
     </div>
     <main class="max-w-5xl m-auto pt-12 lg:pt-24 pb-16">
       <slot />

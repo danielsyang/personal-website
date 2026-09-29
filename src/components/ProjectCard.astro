@@ -7,7 +7,7 @@ interface Props {
   title: string;
   description: string;
   technologies: string[];
-  thumbnail: ImageMetadata;
+  thumbnail?: ImageMetadata;
 }
 
 const { title, description, technologies, thumbnail } = Astro.props;
@@ -15,7 +15,26 @@ const { title, description, technologies, thumbnail } = Astro.props;
 
 <section class="md:gap-4 lg:gap-4 flex shadow p-4 flex-col md:flex-row rounded">
   <div class="mt-1 min-w-[95px] md:min-w-[120px] md:w-[120px]">
-    <Picture src={thumbnail} alt={`${title}'s thumbnail'`} class="rounded-lg" />
+    {
+      thumbnail ? (
+        <Picture
+          src={thumbnail}
+          formats={["avif", "webp"]}
+          fallbackFormat="jpg"
+          widths={[240, 480, 960]}
+          sizes="(min-width: 768px) 120px, 100vw"
+          alt={`${title} screenshot`}
+          class="rounded-lg"
+        />
+      ) : (
+        <div
+          class="aspect-[16/10] rounded-lg bg-zinc-800 flex items-center justify-center font-mono text-sm text-zinc-300"
+          aria-hidden="true"
+        >
+          &gt;_
+        </div>
+      )
+    }
   </div>
 
   <div class="mt-2 md:mt-0">

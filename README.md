@@ -1,54 +1,59 @@
-# Astro Starter Kit: Basics
+# danyang.ca
+
+Personal website of Daniel Yang: about, services, work experience, projects, and a contact form.
+
+Built with [Astro](https://astro.build) and deployed on [Vercel](https://vercel.com).
+
+## Stack
+
+- **Astro 7** on Vercel (`@astrojs/vercel`): pages are prerendered to static HTML; only `src/pages/api/contact.ts` runs as a serverless function (`prerender = false`)
+- **Tailwind CSS 3**, wired through PostCSS (`postcss.config.mjs`, `src/styles/global.css`)
+- **SolidJS** for the interactive contact form (`client:only="solid"`)
+- **astro:assets** + sharp for images: AVIF/WebP with a JPG fallback and responsive widths, generated at build time. `sharp` must stay a direct dependency, because pnpm doesn't expose Astro's own copy
+- **SendGrid** sends contact form messages; **reCAPTCHA v3** protects the form; **Zod** validates it
+
+## Getting started
+
+Requires Node.js 24.14.1 or newer (set in `engines` in `package.json`) and pnpm. The pnpm version is pinned in `packageManager`; with Corepack enabled (`corepack enable`), the right version is used automatically.
 
 ```sh
-npm create astro@latest -- --template basics
+pnpm install
+pnpm dev   # http://localhost:4321
 ```
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/basics)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/basics)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/basics/devcontainer.json)
+### Environment variables
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+Create a `.env` file in the project root (it is gitignored). The contact form needs these to work:
 
-![just-the-basics](https://github.com/withastro/astro/assets/2244813/a0a5533c-a856-4198-8470-2d67b1d7c554)
+| Variable                       | Used by | Description                                        |
+| :----------------------------- | :------ | :------------------------------------------------- |
+| `SENDGRID_API_KEY`             | server  | SendGrid API key                                   |
+| `SENDGRID_FROM`                | server  | Verified sender address                            |
+| `SENDGRID_TO`                  | server  | Address that receives contact messages             |
+| `RECAPTCHA_SERVER_SIDE`        | server  | reCAPTCHA v3 secret key                            |
+| `PUBLIC_RECAPTCHA_CLIENT_SIDE` | client  | reCAPTCHA v3 site key                              |
+| `PUBLIC_CAPTCHA_ACTION`        | both    | reCAPTCHA action name; must match on both sides    |
 
-## 🚀 Project Structure
+Set the same variables in the Vercel project settings for production.
 
-Inside of your Astro project, you'll see the following folders and files:
+## Commands
 
-```text
-/
-├── public/
-│   └── favicon.svg
-├── src/
-│   ├── components/
-│   │   └── Card.astro
-│   ├── layouts/
-│   │   └── Layout.astro
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
+| Command          | Action                                                |
+| :--------------- | :---------------------------------------------------- |
+| `pnpm dev`       | Start the dev server at `localhost:4321`              |
+| `pnpm build`     | Build to `.vercel/output/` (and `dist/`) for Vercel   |
+| `pnpm astro ...` | Run Astro CLI commands, e.g. `pnpm astro --help`      |
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+`pnpm preview` is not supported by the Vercel adapter. To test a production build, use a Vercel preview deployment (or `vercel dev`).
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+## Editing content
 
-Any static assets, like images, can be placed in the `public/` directory.
+- **Experience** and **projects** are plain arrays at the top of `src/pages/experience.astro` and `src/pages/projects.astro`. A project's `thumbnail` is optional; without one, the card shows a placeholder.
+- **Page title and meta description** are passed to `Layout` as `title` and `description`. Without a `description`, a site-wide default is used.
+- **Nav links** are the `links` array in `src/layouts/Layout.astro`.
 
-## 🧞 Commands
+## Deployment
 
-All commands are run from the root of the project, from a terminal:
+Hosted on Vercel; there's no CI config in this repo, so deploys come from the Vercel project itself. Build output (`dist/`, `.vercel/`) is gitignored.
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+The contact endpoint relies on Astro's default origin check, which rejects cross-site form posts. Requests without a matching `Origin` header get a 403.
