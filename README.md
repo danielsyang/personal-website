@@ -12,30 +12,6 @@ Built with [Astro](https://astro.build) and deployed on [Vercel](https://vercel.
 - **astro:assets** + sharp for images: AVIF/WebP with a JPG fallback and responsive widths
 - **SendGrid** sends contact form messages; **reCAPTCHA v3** protects the form; **Zod** validates it
 
-## Project structure
-
-```text
-src/
-├── components/
-│   ├── AboutMe.astro         # Photo, name, tagline, social links (shared sidebar)
-│   ├── ContactMeForm.tsx     # Solid contact form with reCAPTCHA
-│   ├── ExperienceCard.astro
-│   ├── ProjectCard.astro     # Placeholder shown when a project has no thumbnail
-│   └── TechPill.astro
-├── images/                   # Selfie and project thumbnails (optimized at request time)
-├── layouts/Layout.astro      # <head>, nav, per-page title/description
-├── logos/                    # GitHub / LinkedIn SVGs
-├── pages/
-│   ├── index.astro           # Home / about
-│   ├── service.astro
-│   ├── experience.astro      # Experience entries live in this file
-│   ├── projects.astro        # Project entries live in this file
-│   ├── contact.astro
-│   └── api/contact.ts        # POST endpoint: verifies reCAPTCHA, sends email
-├── styles/global.css         # Tailwind directives
-└── validations/contact.ts    # Zod schema for the contact form
-```
-
 ## Getting started
 
 Requires Node.js 22.12 or newer (Astro 7's minimum).
