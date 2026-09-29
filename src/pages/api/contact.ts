@@ -27,17 +27,34 @@ export const POST: APIRoute = async ({ request }) => {
   const message = data.get("message");
   const recaptcha = data.get("g-recaptcha-response");
 
-  const response = await fetch(
-    `${recaptchaURL}?secret=${recaptchaKey}&response=${recaptcha}`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-    }
-  );
+  if (typeof recaptcha !== "string" || !recaptcha) {
+    return new Response(
+      JSON.stringify({
+        message: "Recaptcha failed, try again later.",
+      }),
+      { status: 400 }
+    );
+  }
 
-  const recaptchaResult = await response.json();
+  let recaptchaResult;
+  try {
+    const response = await fetch(recaptchaURL, {
+      method: "POST",
+      body: new URLSearchParams({ secret: recaptchaKey, response: recaptcha }),
+    });
+    if (!response.ok) {
+      throw new Error(`siteverify responded with ${response.status}`);
+    }
+    recaptchaResult = await response.json();
+  } catch (e) {
+    console.error(`couldn't verify recaptcha: ${e}`);
+    return new Response(
+      JSON.stringify({
+        message: "Couldn't verify recaptcha, try again later.",
+      }),
+      { status: 502 }
+    );
+  }
 
   if (
     !recaptchaResult.success ||
@@ -72,6 +89,13 @@ export const POST: APIRoute = async ({ request }) => {
         `couldn't send email from: ${email}, due to: ${JSON.stringify(e)}`
       );
       console.error(`INFO: ${info}`);
+
+      return new Response(
+        JSON.stringify({
+          message: "Couldn't send message, try again later.",
+        }),
+        { status: 500 }
+      );
     }
 
     return new Response(

@@ -9,31 +9,40 @@ async function postFormData(formData: FormData) {
     method: "POST",
     body: formData,
   });
-  const data = await response.json();
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw new Error(data.message ?? `Request failed with ${response.status}`);
+  }
   return data;
 }
 
 export default function ContactMeForm() {
   const [formData, setFormData] = createSignal<FormData>();
   const [grecaptchaObj, setGrecaptchaObj] = createSignal<any>();
+  const [captchaFailed, setCaptchaFailed] = createSignal(false);
+  const [scriptBlocked, setScriptBlocked] = createSignal(false);
+  const [preparing, setPreparing] = createSignal(false);
   const [response] = createResource(formData, postFormData);
   let resetButton: HTMLButtonElement | undefined;
 
-  createEffect(() => {
-    createScriptLoader({
-      src: `https://www.google.com/recaptcha/api.js?render=${CLIENT_SIDE_KEY}`,
-      async onLoad() {
-        // @ts-ignore
-        if (grecaptcha) {
-          // @ts-ignore
-          setGrecaptchaObj(grecaptcha);
-        }
-      },
-    });
+  createScriptLoader({
+    src: `https://www.google.com/recaptcha/api.js?render=${CLIENT_SIDE_KEY}`,
+    onLoad() {
+      // @ts-ignore
+      const g = window.grecaptcha;
+      if (g) {
+        g.ready(() => setGrecaptchaObj(g));
+      } else {
+        setScriptBlocked(true);
+      }
+    },
+    onError() {
+      setScriptBlocked(true);
+    },
   });
 
   createEffect(() => {
-    if (response() && response().message && resetButton) {
+    if (response.state === "ready" && resetButton) {
       resetButton.click();
     }
   });
@@ -41,15 +50,18 @@ export default function ContactMeForm() {
   function submit(e: SubmitEvent) {
     e.preventDefault();
     const g = grecaptchaObj();
-    g.ready(() => {
-      g.execute(import.meta.env.PUBLIC_RECAPTCHA_CLIENT_SIDE, {
-        action: ACTION,
-      }).then((token: string) => {
-        const form = new FormData(e.target as HTMLFormElement);
+    if (!g || preparing()) return;
+
+    setCaptchaFailed(false);
+    setPreparing(true);
+    const form = new FormData(e.target as HTMLFormElement);
+    g.execute(CLIENT_SIDE_KEY, { action: ACTION })
+      .then((token: string) => {
         form.append("g-recaptcha-response", token);
         setFormData(form);
-      });
-    });
+      })
+      .catch(() => setCaptchaFailed(true))
+      .finally(() => setPreparing(false));
   }
 
   return (
@@ -104,12 +116,18 @@ export default function ContactMeForm() {
           rows={8}
         />
       </div>
-      {response.error && (
+      {scriptBlocked() && (
+        <p class="mt-2 text-sm text-red-500">
+          The spam check couldn't load. If you use an ad or tracker blocker,
+          allow google.com/recaptcha and reload the page.
+        </p>
+      )}
+      {(response.error || captchaFailed()) && (
         <p class="mt-2 text-sm text-red-500">
           Something went wrong, please try again later!
         </p>
       )}
-      {response() && response().message && (
+      {response.state === "ready" && (
         <p class="mt-2 text-sm text-green-500">
           Your message has been sent successfully!
         </p>
@@ -118,9 +136,9 @@ export default function ContactMeForm() {
       <button
         class="inline-flex items-center justify-center h-8 px-3 mt-2 mx-auto md:ml-auto md:mr-0 min-w-[62px] rounded-lg border border-current text-sm font-semibold uppercase text-zinc-500 transition-colors hover:bg-zinc-700 hover:border-zinc-700 hover:text-white disabled:pointer-events-none disabled:opacity-60"
         type="submit"
-        disabled={response.loading}
+        disabled={!grecaptchaObj() || preparing() || response.loading}
       >
-        {!response.loading ? (
+        {!(preparing() || response.loading) ? (
           "Send"
         ) : (
           <span
