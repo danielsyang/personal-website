@@ -14,11 +14,11 @@ Built with [Astro](https://astro.build) and deployed on [Vercel](https://vercel.
 
 ## Getting started
 
-Requires Node.js 24.14.1 or newer (set in `engines` in `package.json`).
+Requires Node.js 24.14.1 or newer (set in `engines` in `package.json`) and pnpm. The pnpm version is pinned in `packageManager`; with Corepack enabled (`corepack enable`), the right version is used automatically.
 
 ```sh
-npm install
-npm run dev   # http://localhost:4321
+pnpm install
+pnpm dev   # http://localhost:4321
 ```
 
 ### Environment variables
@@ -38,13 +38,13 @@ Set the same variables in the Vercel project settings for production.
 
 ## Commands
 
-| Command             | Action                                                        |
-| :------------------ | :------------------------------------------------------------ |
-| `npm run dev`       | Start the dev server at `localhost:4321`                      |
-| `npm run build`     | Build to `.vercel/output/` (and `dist/`) for Vercel           |
-| `npm run astro ...` | Run Astro CLI commands, e.g. `npm run astro -- --help`        |
+| Command          | Action                                                |
+| :--------------- | :---------------------------------------------------- |
+| `pnpm dev`       | Start the dev server at `localhost:4321`              |
+| `pnpm build`     | Build to `.vercel/output/` (and `dist/`) for Vercel   |
+| `pnpm astro ...` | Run Astro CLI commands, e.g. `pnpm astro --help`      |
 
-`npm run preview` is not supported by the Vercel adapter. To test a production build, use a Vercel preview deployment (or `vercel dev`).
+`pnpm preview` is not supported by the Vercel adapter. To test a production build, use a Vercel preview deployment (or `vercel dev`).
 
 ## Editing content
 
