@@ -23,21 +23,22 @@ importers:
       astro:
         specifier: ^7.3.5
         version: 7.3.5(@vercel/functions@3.9.9)(jiti@1.21.7)
+      solid-js:
+        specifier: ^1.9.15
+        version: 1.9.15
+      zod:
+        specifier: ^3.22.4
+        version: 3.22.4
+    devDependencies:
       autoprefixer:
         specifier: ^10.6.1
         version: 10.6.1(postcss@8.5.28)
       postcss:
         specifier: ^8.5.28
         version: 8.5.28
-      solid-js:
-        specifier: ^1.9.15
-        version: 1.9.15
       tailwindcss:
         specifier: ^3.4.19
         version: 3.4.19
-      zod:
-        specifier: ^3.22.4
-        version: 3.22.4
 
 packages:
 
