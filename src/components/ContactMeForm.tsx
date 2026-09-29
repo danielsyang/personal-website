@@ -1,5 +1,4 @@
 import { createSignal, createResource, createEffect } from "solid-js";
-import { createScriptLoader } from "@solid-primitives/script-loader";
 
 const CLIENT_SIDE_KEY = import.meta.env.PUBLIC_RECAPTCHA_CLIENT_SIDE;
 const ACTION = import.meta.env.PUBLIC_CAPTCHA_ACTION;
@@ -16,30 +15,41 @@ async function postFormData(formData: FormData) {
   return data;
 }
 
+// Loaded on first interaction with the form, not on page load: the reCAPTCHA
+// script is ~350 KB gzipped, far larger than the rest of the page.
+let recaptchaPromise: Promise<any> | undefined;
+
+function loadRecaptcha() {
+  recaptchaPromise ??= new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = `https://www.google.com/recaptcha/api.js?render=${CLIENT_SIDE_KEY}`;
+    script.async = true;
+    script.onload = () => {
+      // @ts-ignore
+      const g = window.grecaptcha;
+      if (g) {
+        g.ready(() => resolve(g));
+      } else {
+        reject(new Error("grecaptcha is not available"));
+      }
+    };
+    script.onerror = () => reject(new Error("reCAPTCHA failed to load"));
+    document.head.appendChild(script);
+  }).catch((e) => {
+    // Allow a retry on the next attempt, e.g. after disabling a blocker.
+    recaptchaPromise = undefined;
+    throw e;
+  });
+  return recaptchaPromise;
+}
+
 export default function ContactMeForm() {
   const [formData, setFormData] = createSignal<FormData>();
-  const [grecaptchaObj, setGrecaptchaObj] = createSignal<any>();
   const [captchaFailed, setCaptchaFailed] = createSignal(false);
   const [scriptBlocked, setScriptBlocked] = createSignal(false);
   const [preparing, setPreparing] = createSignal(false);
   const [response] = createResource(formData, postFormData);
   let resetButton: HTMLButtonElement | undefined;
-
-  createScriptLoader({
-    src: `https://www.google.com/recaptcha/api.js?render=${CLIENT_SIDE_KEY}`,
-    onLoad() {
-      // @ts-ignore
-      const g = window.grecaptcha;
-      if (g) {
-        g.ready(() => setGrecaptchaObj(g));
-      } else {
-        setScriptBlocked(true);
-      }
-    },
-    onError() {
-      setScriptBlocked(true);
-    },
-  });
 
   createEffect(() => {
     if (response.state === "ready" && resetButton) {
@@ -47,25 +57,47 @@ export default function ContactMeForm() {
     }
   });
 
-  function submit(e: SubmitEvent) {
+  function preload() {
+    loadRecaptcha().then(
+      () => setScriptBlocked(false),
+      () => setScriptBlocked(true)
+    );
+  }
+
+  async function submit(e: SubmitEvent) {
     e.preventDefault();
-    const g = grecaptchaObj();
-    if (!g || preparing()) return;
+    if (preparing() || response.loading) return;
 
     setCaptchaFailed(false);
     setPreparing(true);
     const form = new FormData(e.target as HTMLFormElement);
-    g.execute(CLIENT_SIDE_KEY, { action: ACTION })
-      .then((token: string) => {
+
+    try {
+      let g;
+      try {
+        g = await loadRecaptcha();
+        setScriptBlocked(false);
+      } catch {
+        setScriptBlocked(true);
+        return;
+      }
+
+      try {
+        const token: string = await g.execute(CLIENT_SIDE_KEY, {
+          action: ACTION,
+        });
         form.append("g-recaptcha-response", token);
         setFormData(form);
-      })
-      .catch(() => setCaptchaFailed(true))
-      .finally(() => setPreparing(false));
+      } catch {
+        setCaptchaFailed(true);
+      }
+    } finally {
+      setPreparing(false);
+    }
   }
 
   return (
-    <form onSubmit={submit} class="flex flex-col">
+    <form onSubmit={submit} onFocusIn={preload} class="flex flex-col">
       <div class="md:flex gap-4">
         <div class="flex flex-col md:w-[calc(50%-8px)]">
           <label class="font-bold text-xs items-center mb-1">
@@ -136,7 +168,7 @@ export default function ContactMeForm() {
       <button
         class="inline-flex items-center justify-center h-8 px-3 mt-2 mx-auto md:ml-auto md:mr-0 min-w-[62px] rounded-lg border border-current text-sm font-semibold uppercase text-zinc-500 transition-colors hover:bg-zinc-700 hover:border-zinc-700 hover:text-white disabled:pointer-events-none disabled:opacity-60"
         type="submit"
-        disabled={!grecaptchaObj() || preparing() || response.loading}
+        disabled={preparing() || response.loading}
       >
         {!(preparing() || response.loading) ? (
           "Send"

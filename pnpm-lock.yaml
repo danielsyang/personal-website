@@ -17,9 +17,6 @@ importers:
       '@sendgrid/mail':
         specifier: ^7.7.0
         version: 7.7.0
-      '@solid-primitives/script-loader':
-        specifier: ^2.0.2
-        version: 2.0.2(solid-js@1.9.15)
       astro:
         specifier: ^7.3.5
         version: 7.3.5(@vercel/functions@3.9.9)(jiti@1.21.7)
@@ -827,11 +824,6 @@ packages:
 
   '@shikijs/vscode-textmate@10.0.2':
     resolution: {integrity: sha512-83yeghZ2xxin3Nj8z1NMd/NCuca+gsYXswywDy5bHvwlWL8tpTQmzGeUuHd9FC3E/SBEMvzJRwWEOz5gGes9Qg==}
-
-  '@solid-primitives/script-loader@2.0.2':
-    resolution: {integrity: sha512-TZmUMpWcSpAzBFG46rIWXEQhiF+K1VvQBWsvtOoT3FRwBT64NDUCvjsXdR+0DWErWqZHXI1SXElnMphAu5xeCg==}
-    peerDependencies:
-      solid-js: ^1.6.12
 
   '@tybys/wasm-util@0.10.4':
     resolution: {integrity: sha512-W3c4gRigFS0T/Ma4qIYF3GDAc5AQdHb1yL5znJT1Zv1YaD9Kitx656wBjvr19qbiosmZT8lWDM5BEMynUqX65A==}
@@ -2915,10 +2907,6 @@ snapshots:
       '@types/hast': 3.0.5
 
   '@shikijs/vscode-textmate@10.0.2': {}
-
-  '@solid-primitives/script-loader@2.0.2(solid-js@1.9.15)':
-    dependencies:
-      solid-js: 1.9.15
 
   '@tybys/wasm-util@0.10.4':
     dependencies:
