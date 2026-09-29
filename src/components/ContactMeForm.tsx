@@ -116,14 +116,18 @@ export default function ContactMeForm() {
       )}
 
       <button
-        class="btn mt-2 btn-sm mx-auto md:ml-auto md:mr-0 btn-outline text-zinc-500 min-w-[62px]"
+        class="inline-flex items-center justify-center h-8 px-3 mt-2 mx-auto md:ml-auto md:mr-0 min-w-[62px] rounded-lg border border-current text-sm font-semibold uppercase text-zinc-500 transition-colors hover:bg-zinc-700 hover:border-zinc-700 hover:text-white disabled:pointer-events-none disabled:opacity-60"
         type="submit"
         disabled={response.loading}
       >
         {!response.loading ? (
           "Send"
         ) : (
-          <span class="loading loading-dots loading-xs"></span>
+          <span
+            class="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"
+            role="status"
+            aria-label="Sending"
+          />
         )}
       </button>
 

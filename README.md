@@ -7,7 +7,7 @@ Built with [Astro](https://astro.build) and deployed on [Vercel](https://vercel.
 ## Stack
 
 - **Astro 7** with server output (`output: "server"`) through `@astrojs/vercel`
-- **Tailwind CSS 3** + **daisyUI 3**, wired through PostCSS (`postcss.config.mjs`, `src/styles/global.css`)
+- **Tailwind CSS 3**, wired through PostCSS (`postcss.config.mjs`, `src/styles/global.css`)
 - **SolidJS** for the interactive contact form (`client:only="solid"`)
 - **astro:assets** + sharp for images: AVIF/WebP with a JPG fallback and responsive widths
 - **SendGrid** sends contact form messages; **reCAPTCHA v3** protects the form; **Zod** validates it
