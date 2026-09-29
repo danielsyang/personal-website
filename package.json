@@ -23,5 +23,8 @@
   },
   "devDependencies": {
     "daisyui": "^3.9.4"
+  },
+  "engines": {
+    "node": ">=24.14.1"
   }
 }

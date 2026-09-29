@@ -14,7 +14,7 @@ Built with [Astro](https://astro.build) and deployed on [Vercel](https://vercel.
 
 ## Getting started
 
-Requires Node.js 22.12 or newer (Astro 7's minimum).
+Requires Node.js 24.14.1 or newer (set in `engines` in `package.json`).
 
 ```sh
 npm install
