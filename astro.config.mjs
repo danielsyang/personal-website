@@ -6,6 +6,5 @@ import vercel from "@astrojs/vercel";
 // https://astro.build/config
 export default defineConfig({
   integrations: [solidJs()],
-  output: "server",
   adapter: vercel()
 });

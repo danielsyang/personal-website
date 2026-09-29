@@ -8,6 +8,8 @@ const sendgridTo = import.meta.env.SENDGRID_TO;
 const recaptchaKey = import.meta.env.RECAPTCHA_SERVER_SIDE;
 const action = import.meta.env.PUBLIC_CAPTCHA_ACTION;
 
+export const prerender = false;
+
 const recaptchaURL = "https://www.google.com/recaptcha/api/siteverify";
 
 sgMail.setApiKey(sendgridKey);

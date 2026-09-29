@@ -6,10 +6,10 @@ Built with [Astro](https://astro.build) and deployed on [Vercel](https://vercel.
 
 ## Stack
 
-- **Astro 7** with server output (`output: "server"`) through `@astrojs/vercel`
+- **Astro 7** on Vercel (`@astrojs/vercel`): pages are prerendered to static HTML; only `src/pages/api/contact.ts` runs as a serverless function (`prerender = false`)
 - **Tailwind CSS 3**, wired through PostCSS (`postcss.config.mjs`, `src/styles/global.css`)
 - **SolidJS** for the interactive contact form (`client:only="solid"`)
-- **astro:assets** + sharp for images: AVIF/WebP with a JPG fallback and responsive widths
+- **astro:assets** + sharp for images: AVIF/WebP with a JPG fallback and responsive widths, generated at build time. `sharp` must stay a direct dependency, because pnpm doesn't expose Astro's own copy
 - **SendGrid** sends contact form messages; **reCAPTCHA v3** protects the form; **Zod** validates it
 
 ## Getting started
