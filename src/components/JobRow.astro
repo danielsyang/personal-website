@@ -1,0 +1,38 @@
+---
+import type { Job } from "../data/experience";
+
+type Props = Job;
+
+const { period, position, company, description, technologies = [] } =
+  Astro.props;
+---
+
+<div
+  class="grid grid-cols-[160px_360px_1fr] gap-10 py-7 border-t border-rule first:border-t-0 first:pt-0 max-[900px]:grid-cols-1 max-[900px]:gap-2.5"
+>
+  <p class="text-[15px] font-medium text-muted">{period}</p>
+  <div>
+    <h3 class="font-serif text-[30px] leading-[1.1]">{position}</h3>
+    <p class="text-[15px] text-muted mt-1">{company}</p>
+  </div>
+  <div>
+    {
+      description && (
+        <p class="text-[17px] leading-[1.55] mb-3.5 text-pretty">
+          {description}
+        </p>
+      )
+    }
+    {
+      technologies.length > 0 && (
+        <ul class="flex flex-wrap gap-2">
+          {technologies.map((name) => (
+            <li class="text-[13px] py-1 px-2.5 border border-chip rounded-full">
+              {name}
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </div>
+</div>

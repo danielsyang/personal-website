@@ -1,36 +1,77 @@
 ---
+import { Picture } from "astro:assets";
 import Layout from "../layouts/Layout.astro";
+import Section from "../components/Section.astro";
+import Selfie from "../images/selfie.jpeg";
 
-import AboutMe from "../components/AboutMe.astro";
+const link = "underline underline-offset-[3px] hover:opacity-70";
 ---
 
 <Layout title="Daniel Yang | Software Engineer">
-  <div class="lg:flex lg:justify-between lg:gap-4">
-    <AboutMe />
-    <div class="lg:w-1/2 px-4 pt-16 lg:pt-0">
-      <p class="text-sm lg:text-base text-zinc-400 mb-4">
-        Back in 2015, I graduated as an Automation Engineer. After spending time
-        programming embedded systems, I was so hooked on software
-        development that I sought an internship as a software engineer.
-        Fast-forward to today, and I've had the privilege of building software
-        for a <a class="font-bold" href="https://www.ottointelligence.co/"
-          >pre-seed start-up</a
-        >, as well as <a class="font-bold" href="https://www.icasei.com.br/"
-          >mid-size</a
-        > and <a class="font-bold" href="https://couriers.skipthedishes.com/"
-          >large corporations</a
+  <header
+    class="grid grid-cols-[1fr_280px] gap-16 items-end pt-[120px] pb-24 px-16 max-[900px]:grid-cols-1 max-[900px]:gap-10 max-[900px]:py-16 max-[900px]:px-6"
+  >
+    <div class="flex flex-col gap-10">
+      <p class="text-sm font-medium uppercase tracking-[.14em] text-accent">
+        Senior Software Engineer at Replicant
+      </p>
+      <h1
+        class="font-serif text-[104px] leading-[.98] tracking-[-0.02em] text-balance max-[900px]:text-[56px]"
+      >
+        I build <span class="whitespace-nowrap">full-stack</span> products <em
+          >for the web.</em
+        >
+      </h1>
+    </div>
+    <div class="flex flex-col gap-4">
+      <Picture
+        src={Selfie}
+        formats={["avif", "webp"]}
+        fallbackFormat="jpg"
+        widths={[280, 560]}
+        sizes="280px"
+        alt="Photo of Daniel Yang"
+        class="w-[280px] h-[360px] object-cover rounded-[140px_140px_8px_8px] bg-img-bg"
+        loading="eager"
+      />
+      <div class="flex gap-5 text-sm font-medium">
+        <a href="https://github.com/danielsyang" class={link}>GitHub</a>
+        <a href="https://www.linkedin.com/in/shuyangchang/" class={link}
+          >LinkedIn</a
+        >
+      </div>
+    </div>
+  </header>
+
+  <Section id="about" number="01" title="About">
+    <div
+      class="flex flex-col gap-[22px] text-xl leading-[1.6] max-w-[760px] text-pretty"
+    >
+      <p class="font-serif text-[32px] leading-[1.3]">
+        I studied automation engineering and graduated in 2015. Programming
+        embedded systems got me hooked on software, so I went after an
+        internship as a software engineer and have been building software ever
+        since.
+      </p>
+      <p>
+        I've worked at a pre-seed startup, where I was the first engineer, as
+        well as at a <a class={link} href="https://www.icasei.com.br/"
+          >mid-size company</a
+        > and a <a class={link} href="https://couriers.skipthedishes.com/"
+          >large one</a
+        >. Today I'm a senior engineer at <a
+          class={link}
+          href="https://www.replicant.com/">Replicant</a
         >.
       </p>
-
-      <p class="text-sm lg:text-base text-zinc-400 mb-4">
-        My main focus these days is building products and leading projects for
-        my current company Openscreen Inc. In my free time I keep up with
-        the latest technologies and try to learn new things.
+      <p>
+        In my spare time I build things to learn. Lately that's an interpreter
+        and a terminal to-do app in Rust.
       </p>
-      <p class="text-sm lg:text-base text-zinc-400">
-        When I'm not at the computer, I'm usually biking, hiking, or skiing
-        during winter time.
+      <p>
+        Away from the computer I'm usually biking, hiking, or skiing in the
+        winter.
       </p>
     </div>
-  </div>
+  </Section>
 </Layout>

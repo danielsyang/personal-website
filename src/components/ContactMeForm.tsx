@@ -105,85 +105,91 @@ export default function ContactMeForm() {
     }
   }
 
+  const label = "text-sm font-medium mb-2";
+  const input =
+    "bg-transparent border border-chip rounded-md px-3 py-2.5 text-[17px] focus:outline-none focus:border-ink";
+  const Required = () => <span class="text-accent">*</span>;
+
   return (
-    <form onSubmit={submit} onFocusIn={preload} class="flex flex-col">
-      <div class="md:flex gap-4">
-        <div class="flex flex-col md:w-[calc(50%-8px)]">
-          <label class="font-bold text-xs items-center mb-1">
-            First Name <span class="text-red-400">*</span>
+    <form onSubmit={submit} onFocusIn={preload} class="flex flex-col gap-5">
+      <div class="grid grid-cols-2 gap-5 max-[600px]:grid-cols-1">
+        <div class="flex flex-col">
+          <label for="firstName" class={label}>
+            First name <Required />
           </label>
           <input
             type="text"
             id="firstName"
             name="firstName"
+            autocomplete="given-name"
             required
-            class="border rounded-md border-zinc-300 px-2 text-xs py-1"
+            class={input}
           />
         </div>
-        <div class="flex flex-col md:w-[calc(50%-8px)] mt-4 md:mt-0">
-          <label class="font-bold text-xs items-center mb-1">
-            Last Name <span class="text-red-400">*</span>
+        <div class="flex flex-col">
+          <label for="lastName" class={label}>
+            Last name <Required />
           </label>
           <input
             type="text"
             id="lastName"
             name="lastName"
+            autocomplete="family-name"
             required
-            class="border rounded-md border-zinc-300 px-2 text-xs py-1"
+            class={input}
           />
         </div>
       </div>
-      <div class="flex flex-col mt-4">
-        <label class="font-bold text-xs items-center mb-1">
-          Email <span class="text-red-400">*</span>
+      <div class="flex flex-col">
+        <label for="email" class={label}>
+          Email <Required />
         </label>
         <input
           type="email"
           id="email"
           name="email"
+          autocomplete="email"
           required
-          class="border rounded-md border-zinc-300 px-2 text-xs py-1"
+          class={input}
         />
       </div>
-      <div class="mt-4 flex flex-col">
-        <label class="font-bold text-xs items-center mb-1">
-          Message <span class="text-red-400">*</span>
+      <div class="flex flex-col">
+        <label for="message" class={label}>
+          Message <Required />
         </label>
         <textarea
           id="message"
           name="message"
           required
-          class="border rounded-md border-zinc-300 px-2 text-xs py-1"
+          class={input}
           rows={8}
         />
       </div>
       {scriptBlocked() && (
-        <p class="mt-2 text-sm text-red-500">
+        <p class="text-[15px] text-accent">
           The spam check couldn't load. If you use an ad or tracker blocker,
           allow google.com/recaptcha and reload the page.
         </p>
       )}
       {(response.error || captchaFailed()) && (
-        <p class="mt-2 text-sm text-red-500">
-          Something went wrong, please try again later!
+        <p class="text-[15px] text-accent">
+          Something went wrong. Please try again, or reach me on LinkedIn.
         </p>
       )}
       {response.state === "ready" && (
-        <p class="mt-2 text-sm text-green-500">
-          Your message has been sent successfully!
-        </p>
+        <p class="text-[15px] text-body">Thanks! Your message is on its way.</p>
       )}
 
       <button
-        class="inline-flex items-center justify-center h-8 px-3 mt-2 mx-auto md:ml-auto md:mr-0 min-w-[62px] rounded-lg border border-current text-sm font-semibold uppercase text-zinc-500 transition-colors hover:bg-zinc-700 hover:border-zinc-700 hover:text-white disabled:pointer-events-none disabled:opacity-60"
+        class="self-start inline-flex items-center justify-center min-w-[140px] text-lg font-medium py-[18px] px-8 border border-ink rounded-full transition-opacity hover:opacity-70 disabled:pointer-events-none disabled:opacity-50"
         type="submit"
         disabled={!grecaptchaObj() || preparing() || response.loading}
       >
         {!(preparing() || response.loading) ? (
-          "Send"
+          "Send message →"
         ) : (
           <span
-            class="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"
+            class="h-5 w-5 animate-spin rounded-full border-2 border-current border-t-transparent"
             role="status"
             aria-label="Sending"
           />

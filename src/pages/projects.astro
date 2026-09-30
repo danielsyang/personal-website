@@ -1,49 +1,18 @@
 ---
-import AboutMe from "../components/AboutMe.astro";
 import Layout from "../layouts/Layout.astro";
-import ProjectCard from "../components/ProjectCard.astro";
-import OttoLanding from "../images/ottointelligence.jpg";
-import MeetOttoLanding from "../images/meetotto.jpg";
-import TuiDo from "../images/tuido.png";
-
-const projects = [
-  {
-    thumbnail: OttoLanding,
-    title: "Otto Intelligence App",
-    description:
-      "Portfolio manager I developed during my time at Otto. I was the main developer for this project.",
-    technologies: ["React", "Tailwind"],
-  },
-  {
-    thumbnail: MeetOttoLanding,
-    title: "Meet Otto App",
-    description: "Custom CRM for Otto Intelligence.",
-    technologies: ["React", "Tailwind", "trpc"],
-  },
-  {
-    title: "Dang Language",
-    description:
-      "Wrote my own interpreter in Rust. It has a very similar syntax to JavaScript, but I'm making some changes for it to become more TypeScript-y.",
-    technologies: ["Rust"],
-  },
-  {
-    thumbnail: TuiDo,
-    title: "Tui-Do",
-    description:
-      "To-do app written in Rust, operated in the terminal and uses SQLite as main database.",
-    technologies: ["Rust"],
-  },
-];
+import Section from "../components/Section.astro";
+import ProjectTile from "../components/ProjectTile.astro";
+import { projects } from "../data/projects";
 ---
 
 <Layout
-  title="Daniel's projects"
+  title="Projects | Daniel Yang"
   description="Projects by Daniel Yang: web apps built at Otto Intelligence, plus a Rust interpreter and a terminal to-do app."
 >
-  <div class="lg:flex lg:justify-between lg:gap-4">
-    <AboutMe hideDescription={true} />
-    <div class="lg:w-1/2 gap-y-4 flex flex-col px-4 pt-16 lg:pt-0">
-      {projects.map((job) => <ProjectCard {...job} />)}
+  <Section number="04" title="Projects"
+    as="h1">
+    <div class="grid grid-cols-2 gap-x-10 gap-y-12 max-[900px]:grid-cols-1">
+      {projects.map((project) => <ProjectTile {...project} />)}
     </div>
-  </div>
+  </Section>
 </Layout>

@@ -8,53 +8,117 @@ interface Props {
 
 const {
   title,
-  description = "Daniel Yang, Senior Software Engineer at Openscreen. Full-stack TypeScript, AWS and Rust; available for freelance work.",
+  description = "Daniel Yang, Senior Software Engineer at Replicant. Full-stack TypeScript, AWS and Rust; available for freelance work.",
 } = Astro.props;
 
 const links = [
-  { href: "/", label: "Home" },
   { href: "/service", label: "Services" },
   { href: "/experience", label: "Experience" },
   { href: "/projects", label: "Projects" },
-  { href: "/contact", label: "Contact Me" },
 ];
 
+const socials = [
+  { href: "https://github.com/danielsyang", label: "GitHub" },
+  { href: "https://www.linkedin.com/in/shuyangchang/", label: "LinkedIn" },
+];
+
+const link = "underline underline-offset-[3px] hover:opacity-70";
+
 const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
+const current = (href: string) => (currentPath === href ? "page" : undefined);
 ---
 
 <!doctype html>
-<html lang="en" class="bg-[#fafafa] h-full">
+<html lang="en" class="bg-paper">
   <head>
     <meta charset="UTF-8" />
     <meta name="description" content={description} />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Public+Sans:wght@400;500;600&display=swap"
+    />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
   </head>
-  <body>
-    <div
-      class="flex py-4 lg:py-6 text-gray-500 shadow sticky top-0 bg-[#fafafa] px-4"
-    >
-      <nav class="w-full max-w-5xl m-auto">
-        {
-          links.map(({ href, label }) => (
-            <a
-              class:list={[
-                "text-xs md:text-sm mr-4 md:mr-8",
-                { "text-zinc-800 font-bold": currentPath === href },
-              ]}
-              href={href}
-              aria-current={currentPath === href ? "page" : undefined}
-            >
-              {label}
-            </a>
-          ))
-        }
+  <body class="bg-paper text-ink font-public antialiased">
+    <div class="max-w-[1280px] mx-auto min-h-screen flex flex-col">
+      <nav
+        class="sticky top-0 z-10 bg-paper flex flex-wrap justify-between items-center gap-x-10 gap-y-4 py-8 px-16 border-b border-rule max-[900px]:px-6 max-[900px]:py-4 max-[900px]:gap-y-2"
+      >
+        <a
+          href="/"
+          class="font-serif text-[28px] hover:opacity-70"
+          aria-current={current("/")}
+        >
+          Daniel Yang
+        </a>
+        <div
+          class="flex flex-wrap gap-9 text-[15px] font-medium max-[900px]:gap-[18px] max-[900px]:text-sm"
+        >
+          {
+            links.map(({ href, label }) => (
+              <a
+                href={href}
+                class="hover:opacity-70 aria-[current=page]:underline aria-[current=page]:underline-offset-[6px]"
+                aria-current={current(href)}
+              >
+                {label}
+              </a>
+            ))
+          }
+          <a
+            href="/contact"
+            class="text-accent hover:opacity-70 aria-[current=page]:underline aria-[current=page]:underline-offset-[6px]"
+            aria-current={current("/contact")}
+          >
+            Contact me →
+          </a>
+        </div>
       </nav>
+
+      <main class="flex-1">
+        <slot />
+      </main>
+
+      <footer
+        class="flex flex-col gap-16 bg-ink text-paper pt-24 pb-12 px-16 max-[900px]:px-6"
+      >
+        <div
+          class="flex justify-between items-end gap-10 max-[900px]:flex-col max-[900px]:items-start"
+        >
+          <p
+            class="font-serif text-[120px] leading-[.95] max-[900px]:text-[64px]"
+          >
+            Let's build<br /><em class="text-accent-dark-bg">something.</em>
+          </p>
+          {
+            currentPath !== "/contact" && (
+              <a
+                href="/contact"
+                class="text-lg font-medium py-[18px] px-8 border border-paper rounded-full whitespace-nowrap hover:opacity-70"
+              >
+                Contact me →
+              </a>
+            )
+          }
+        </div>
+        <div class="flex justify-between text-sm text-footer-muted">
+          <span>© Daniel Yang</span>
+          <div class="flex gap-6">
+            {
+              socials.map(({ href, label }) => (
+                <a href={href} class={link}>
+                  {label}
+                </a>
+              ))
+            }
+          </div>
+        </div>
+      </footer>
     </div>
-    <main class="max-w-5xl m-auto pt-12 lg:pt-24 pb-16">
-      <slot />
-    </main>
   </body>
 </html>

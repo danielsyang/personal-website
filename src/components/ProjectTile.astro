@@ -1,0 +1,48 @@
+---
+import { Picture } from "astro:assets";
+import type { Project } from "../data/projects";
+
+type Props = Project;
+
+const { title, description, technologies, thumbnail, link } = Astro.props;
+---
+
+<article class="flex flex-col gap-4">
+  {
+    thumbnail ? (
+      <Picture
+        src={thumbnail}
+        formats={["avif", "webp"]}
+        fallbackFormat="jpg"
+        widths={[400, 600, 1200]}
+        sizes="(max-width: 900px) 100vw, 556px"
+        alt={`${title} screenshot`}
+        class="w-full aspect-[16/10] object-cover rounded-md bg-img-bg"
+      />
+    ) : (
+      <div class="w-full aspect-[16/10] rounded-md bg-img-bg" aria-hidden="true" />
+    )
+  }
+  <div class="flex justify-between items-baseline gap-4">
+    <h3 class="font-serif text-[34px]">
+      {
+        link ? (
+          <a
+            href={link}
+            class="underline underline-offset-[3px] hover:opacity-70"
+          >
+            {title}
+          </a>
+        ) : (
+          title
+        )
+      }
+    </h3>
+    <p class="text-[13px] text-muted text-right">
+      {technologies.join(" · ")}
+    </p>
+  </div>
+  <p class="text-[17px] leading-[1.55] text-body text-pretty">
+    {description}
+  </p>
+</article>
