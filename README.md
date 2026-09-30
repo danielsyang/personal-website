@@ -48,7 +48,8 @@ Set the same variables in the Vercel project settings for production.
 
 ## Editing content
 
-- **Experience** and **projects** are plain arrays at the top of `src/pages/experience.astro` and `src/pages/projects.astro`. A project's `thumbnail` is optional; without one, the card shows a placeholder.
+- **Experience** and **projects** are plain arrays in `src/data/experience.ts` and `src/data/projects.ts`. A job's `description` and `technologies` are optional. A project's `thumbnail` and `link` are optional; without a thumbnail, the tile shows a placeholder.
+- **Colors and fonts** are design tokens in `tailwind.config.mjs` (`paper`, `ink`, `accent`, …; `font-serif` is Instrument Serif, `font-public` is Public Sans).
 - **Page title and meta description** are passed to `Layout` as `title` and `description`. Without a `description`, a site-wide default is used.
 - **Nav links** are the `links` array in `src/layouts/Layout.astro`.
 
